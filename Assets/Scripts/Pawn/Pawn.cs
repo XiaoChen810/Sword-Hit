@@ -7,9 +7,13 @@ public class Pawn : MonoBehaviour
 {
     public PawnController Controller;
     public bool CanControll;
+    public bool IsDie;
+    [Header("Health")]
     public float Hp = 100;
     public float MaxHp = 100;
-    public Slider HeathSlider;
+    public Slider HealthSlider;
+
+    [Header("Force")]
     [SerializeField] private float _force = 100;
     public float Force
     {
@@ -25,8 +29,8 @@ public class Pawn : MonoBehaviour
     }
     public float ForceBase = 100;
     public float Aforce = 100;
-    public float MaxForce = 500;
-    public bool IsDie;
+    public float MaxForce = 300;
+
     private void Start()
     {
         Controller = GetComponent<PawnController>();
@@ -42,7 +46,7 @@ public class Pawn : MonoBehaviour
     private void Update()
     {
         if (IsDie) return;
-        HeathSlider.value = Hp / MaxHp;
+        HealthSlider.value = Hp / MaxHp;
         if(Hp <= 0)
         {
             IsDie = true;

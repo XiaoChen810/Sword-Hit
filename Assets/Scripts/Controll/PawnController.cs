@@ -7,6 +7,8 @@ public class PawnController : MonoBehaviour
     // Component
     public Animator anim;
     public Rigidbody2D rb;
+    public Collider2D leg1;
+    public Collider2D leg2;
     public Pawn pawn;
 
     [SerializeField] 
@@ -38,12 +40,19 @@ public class PawnController : MonoBehaviour
     private float _speed = 1;
     [SerializeField]
     private float _maxSpeed;
+    [SerializeField]
+    private float _jumpForce;
 
     [Header("KEY")]
     public KeyCode k_MoveLeft;
     public KeyCode k_MoveRight;
     public KeyCode k_Attack;
     public KeyCode k_Defend;
+    public KeyCode k_Jump;
+
+    [Header("Jump")]
+    public LayerMask GroundLayer;
+    public bool OnGround;
 
     public void Update()
     {
@@ -58,6 +67,7 @@ public class PawnController : MonoBehaviour
         ActionUpdate();
         MoveUpdate();
         FlipUpdate();
+        OnGround = (leg1.IsTouchingLayers(GroundLayer) || leg2.IsTouchingLayers(GroundLayer));
     }
 
     public void DefendSuccessly()
@@ -102,11 +112,19 @@ public class PawnController : MonoBehaviour
                 rb.velocity = rb.velocity.normalized * _maxSpeed;
             }
             anim.SetFloat("Speed", Mathf.Abs(dir.x));
+
+            if (Input.GetKey(k_Jump) && OnGround)
+            {
+                rb.AddForce(new Vector2(0, _jumpForce));
+                OnGround = false;
+            }
         }
         else
         {
             anim.SetFloat("Speed", 0);
         }
+
+        anim.SetBool("Jump", !OnGround);        
     }
 
     private void ActionUpdate()
